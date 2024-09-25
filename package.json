@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "Strapi email provider for supporting multiple email channels",
   "repository": {
-    "url": "https://github.com/lukibsubekti/strapi-provider-email-multichannel.git"
+    "url": "git+https://github.com/lukibsubekti/strapi-provider-email-multichannel.git"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "brevo",
     "nodemailer"
   ],
-  "author": "lukibsubekti",
+  "author": "Luki B. Subekti <lukibsubekti@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.7",
