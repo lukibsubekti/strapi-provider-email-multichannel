@@ -91,7 +91,7 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
           });
         }
 
-        if (selectedChannel.type === 'smtp') {
+        else if (selectedChannel.type === 'smtp') {
           const transporter = nodemailer.createTransport(selectedChannel.options);
           
           const mail: SendMailOptions = {
@@ -106,7 +106,7 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
         }
 
         else {
-          throw new Error(`No supported channel type: ${selectedChannel.type}`);
+          throw new Error(`No supported channel type`);
         }
 
         return true;
