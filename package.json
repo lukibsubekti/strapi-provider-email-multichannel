@@ -1,6 +1,6 @@
 {
   "name": "strapi-provider-email-multichannel",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Strapi email provider for supporting multiple email channels",
   "repository": {
     "url": "git+https://github.com/lukibsubekti/strapi-provider-email-multichannel.git"

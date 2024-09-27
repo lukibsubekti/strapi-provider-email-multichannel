@@ -38,6 +38,7 @@ type ChannelOptions = {
 type ProviderOptions = {
   defaultChannel: string;
   channels: Record<string, ChannelOptions>
+  debug?: boolean;
 }
 
 const emailFields = [
@@ -55,9 +56,11 @@ const emailFields = [
 const brevoApiUrl = "https://api.brevo.com/v3";
 
 export function init(providerOptions: ProviderOptions, settings: Settings) {
+  const debug = providerOptions.debug ? (...args:string[])=>{console.log('[' + new Date().toISOString() + ']', ...args)} : ()=>{}
 
   return {
     async send(options: SendOptions): Promise<any> {
+      debug('Email sending options:', JSON.stringify(options, null, 2));
 
       try {
         const { from, to, cc, bcc, replyTo, subject, text, html, channel, ...rest } = options;
@@ -69,6 +72,8 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
 
         let senderName = from || settings.defaultFromName;
         senderName = senderName.match(/(.*?)</g) ? senderName.match(/(.*?)</g)?.map((a) => a.replace(/<|>/g, ""))[0] || '' : senderName;
+
+        debug(`Sender email: ${senderEmail} | Sender name: ${senderName}`);
 
         if (selectedChannel.type === 'brevo') {
           const mail = {
@@ -89,6 +94,9 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
           let send = await axios.post(brevoApiUrl + "/smtp/email", mail, {
             headers: { "api-key": selectedChannel.options.apiKey },
           });
+
+          debug('Email sending result:', send.data?.messageId);
+          return send.data?.messageId;
         }
 
         else if (selectedChannel.type === 'smtp') {
@@ -96,22 +104,24 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
           
           const mail: SendMailOptions = {
             ..._.pick(options, emailFields),
-            from: from || `"${settings.defaultFromName}" ${settings.defaultFrom}`,
+            from: `"${senderName || settings.defaultFromName}" ${senderEmail || settings.defaultFrom}`,
             replyTo: replyTo || settings.defaultReplyTo,
             text: text || options.html,
             html: html || options.text,
           };
   
           let send = await transporter.sendMail(mail);
+
+          debug('Email sending result:', send.messageId);
+          return send.messageId;
         }
 
         else {
           throw new Error(`No supported channel type`);
         }
 
-        return true;
       } catch (e) {
-        console.log(e);
+        console.error(e);
         return false;
       }
     },
