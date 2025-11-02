@@ -73,12 +73,12 @@ export function init(providerOptions: ProviderOptions, settings: Settings) {
         let senderName = from || settings.defaultFromName;
         senderName = senderName.match(/(.*?)</g) ? senderName.match(/(.*?)</g)?.map((a) => a.replace(/<|>/g, ""))[0] || '' : senderName;
 
-        debug(`Sender email: ${senderEmail} | Sender name: ${senderName}`);
+        debug(`From: ${from} | Sender email: ${senderEmail} | Sender name: ${senderName}`);
 
         if (selectedChannel.type === 'brevo') {
           const mail = {
             sender: {
-              name: from || settings.defaultFromName,
+              name: senderName || settings.defaultFromName,
               email: senderEmail,
             },
             to: [{ email: to }],
